@@ -24,11 +24,9 @@ A lightweight desktop application that converts local image paths in Markdown fi
 
 ## 📸 Screenshot
 
-The application features a modern dark theme interface with:
-- File selection card
-- Customizable path prefix settings
-- Real-time conversion preview
-- One-click conversion buttons
+<p align="center">
+  <img src="screenshots/main.png" alt="Application Screenshot" width="700">
+</p>
 
 ## 🚀 Installation
 
