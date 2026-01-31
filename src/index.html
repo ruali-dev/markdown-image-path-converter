@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Markdown 图片路径转换器</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- 标题区域 -->
+    <header class="app-header">
+      <div class="logo">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/>
+          <polyline points="14 2 14 8 20 8"/>
+          <path d="M12 18v-6"/>
+          <path d="M9 15l3 3 3-3"/>
+        </svg>
+      </div>
+      <h1>Markdown 图片路径转换器</h1>
+      <p class="subtitle">将本地路径转换为统一的相对路径格式</p>
+    </header>
+
+    <!-- 主内容区域 -->
+    <main class="main-content">
+      <!-- 文件选择卡片 -->
+      <section class="card file-section">
+        <div class="card-header">
+          <span class="card-icon">📄</span>
+          <span class="card-title">选择文件</span>
+        </div>
+        <div class="file-input-group">
+          <input type="text" id="file-path" class="file-input" placeholder="点击下方按钮选择 Markdown 文件..." readonly>
+          <button id="browse-btn" class="btn btn-primary">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+            </svg>
+            浏览文件
+          </button>
+        </div>
+      </section>
+
+      <!-- 设置卡片 -->
+      <section class="card settings-section">
+        <div class="card-header">
+          <span class="card-icon">⚙️</span>
+          <span class="card-title">转换设置</span>
+        </div>
+        <div class="settings-row">
+          <label for="target-prefix">目标路径前缀</label>
+          <input type="text" id="target-prefix" class="text-input" value="upload" placeholder="upload">
+        </div>
+      </section>
+
+      <!-- 预览卡片 -->
+      <section class="card preview-section">
+        <div class="card-header">
+          <span class="card-icon">🔍</span>
+          <span class="card-title">转换预览</span>
+          <span id="change-count" class="badge">0 处更改</span>
+        </div>
+        <div id="preview-content" class="preview-content">
+          <div class="preview-placeholder">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.4">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="7 10 12 15 17 10"/>
+              <line x1="12" y1="15" x2="12" y2="3"/>
+            </svg>
+            <p>选择一个 Markdown 文件以查看预览</p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- 操作按钮区域 -->
+    <footer class="action-bar">
+      <button id="convert-btn" class="btn btn-success" disabled>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="20 6 9 17 4 12"/>
+        </svg>
+        转换并覆盖原文件
+      </button>
+      <button id="saveas-btn" class="btn btn-secondary" disabled>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+          <polyline points="17 21 17 13 7 13 7 21"/>
+          <polyline points="7 3 7 8 15 8"/>
+        </svg>
+        另存为
+      </button>
+    </footer>
+
+    <!-- 状态栏 -->
+    <div id="status-bar" class="status-bar">
+      <span class="status-dot"></span>
+      <span id="status-text">就绪</span>
+    </div>
+  </div>
+
+  <!-- Toast 通知 -->
+  <div id="toast" class="toast"></div>
+
+  <script src="main.js"></script>
+</body>
+</html>
