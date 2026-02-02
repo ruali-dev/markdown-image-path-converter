@@ -18,6 +18,7 @@ A lightweight desktop application that converts local image paths in Markdown fi
 - 🎯 **One-Click Conversion** - Select a Markdown file and convert all image paths instantly
 - 🔍 **Live Preview** - See all changes before applying them
 - ⚙️ **Custom Prefix** - Set your own target path prefix (default: `upload`)
+- 🔄 **Extension Conversion** - Convert image extensions (e.g., `.png` → `.jpg`), leave empty to keep original
 - 💾 **Flexible Output** - Overwrite original file or save as a new file
 - 🎨 **Modern UI** - Beautiful dark theme with glassmorphism effects
 - 📦 **Tiny Size** - Only ~2MB installer (compared to 100MB+ for Electron apps)
