@@ -5,6 +5,7 @@ const { invoke } = window.__TAURI__.core;
 const filePathInput = document.getElementById('file-path');
 const browseBtn = document.getElementById('browse-btn');
 const targetPrefixInput = document.getElementById('target-prefix');
+const targetExtensionInput = document.getElementById('target-extension');
 const previewContent = document.getElementById('preview-content');
 const changeCountBadge = document.getElementById('change-count');
 const convertBtn = document.getElementById('convert-btn');
@@ -93,11 +94,13 @@ async function loadFile(filePath) {
 
 async function updatePreview() {
   const prefix = targetPrefixInput.value.trim() || 'upload';
+  const extension = targetExtensionInput.value.trim();
 
   try {
     const result = await invoke('convert_paths', {
       content: originalContent,
-      targetPrefix: prefix
+      targetPrefix: prefix,
+      targetExtension: extension
     });
 
     changes = result.changes;
@@ -144,10 +147,12 @@ async function convertAndOverwrite() {
   try {
     setStatus('正在转换...', 'loading');
     const prefix = targetPrefixInput.value.trim() || 'upload';
+    const extension = targetExtensionInput.value.trim();
 
     await invoke('convert_and_save', {
       path: currentFilePath,
-      targetPrefix: prefix
+      targetPrefix: prefix,
+      targetExtension: extension
     });
 
     // 重新加载文件以更新预览
@@ -184,11 +189,13 @@ async function saveAs() {
     if (savePath) {
       setStatus('正在保存...', 'loading');
       const prefix = targetPrefixInput.value.trim() || 'upload';
+      const extension = targetExtensionInput.value.trim();
 
       await invoke('convert_and_save_as', {
         sourcePath: currentFilePath,
         targetPath: savePath,
-        targetPrefix: prefix
+        targetPrefix: prefix,
+        targetExtension: extension
       });
 
       showToast(`✅ 已保存到: ${savePath}`);
@@ -207,16 +214,19 @@ browseBtn.addEventListener('click', selectFile);
 convertBtn.addEventListener('click', convertAndOverwrite);
 saveasBtn.addEventListener('click', saveAs);
 
-// 前缀输入框变化时更新预览
+// 前缀/后缀输入框变化时更新预览
 let debounceTimer;
-targetPrefixInput.addEventListener('input', () => {
+function handleInputChange() {
   clearTimeout(debounceTimer);
   debounceTimer = setTimeout(() => {
     if (originalContent) {
       updatePreview();
     }
   }, 300);
-});
+}
+
+targetPrefixInput.addEventListener('input', handleInputChange);
+targetExtensionInput.addEventListener('input', handleInputChange);
 
 // 初始化
 setStatus('就绪');

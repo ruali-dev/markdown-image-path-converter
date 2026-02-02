@@ -37,11 +37,12 @@ fn read_file(path: &str) -> Result<String, String> {
 
 /// 转换图片路径
 #[tauri::command]
-fn convert_paths(content: &str, target_prefix: &str) -> Result<ConvertResult, String> {
+fn convert_paths(content: &str, target_prefix: &str, target_extension: &str) -> Result<ConvertResult, String> {
     // 匹配 Markdown 图片语法: ![alt](path)
     let re = Regex::new(r"(!\[[^\]]*\]\()([^)]+)(\))").map_err(|e| e.to_string())?;
     
     let mut changes: Vec<PathChange> = Vec::new();
+    let ext = target_extension.trim();
     
     let new_content = re.replace_all(content, |caps: &regex::Captures| {
         let prefix = &caps[1];
@@ -52,7 +53,29 @@ fn convert_paths(content: &str, target_prefix: &str) -> Result<ConvertResult, St
         let normalized = full_path.replace('\\', "/");
         let filename = normalized.rsplit('/').next().unwrap_or(full_path);
         
-        let new_path = format!("{}/{}", target_prefix, filename);
+        // 处理后缀转换
+        let new_filename = if !ext.is_empty() {
+            // 替换文件后缀
+            if let Some(dot_pos) = filename.rfind('.') {
+                let name_without_ext = &filename[..dot_pos];
+                if ext.starts_with('.') {
+                    format!("{}{}", name_without_ext, ext)
+                } else {
+                    format!("{}.{}", name_without_ext, ext)
+                }
+            } else {
+                // 没有后缀，添加新后缀
+                if ext.starts_with('.') {
+                    format!("{}{}", filename, ext)
+                } else {
+                    format!("{}.{}", filename, ext)
+                }
+            }
+        } else {
+            filename.to_string()
+        };
+        
+        let new_path = format!("{}/{}", target_prefix, new_filename);
         
         // 记录变更（如果路径确实改变了）
         if full_path != new_path {
@@ -73,9 +96,9 @@ fn convert_paths(content: &str, target_prefix: &str) -> Result<ConvertResult, St
 
 /// 转换并保存（覆盖原文件）
 #[tauri::command]
-fn convert_and_save(path: &str, target_prefix: &str) -> Result<usize, String> {
+fn convert_and_save(path: &str, target_prefix: &str, target_extension: &str) -> Result<usize, String> {
     let content = read_file(path)?;
-    let result = convert_paths(&content, target_prefix)?;
+    let result = convert_paths(&content, target_prefix, target_extension)?;
     
     fs::write(path, &result.content).map_err(|e| format!("保存失败: {}", e))?;
     
@@ -88,9 +111,10 @@ fn convert_and_save_as(
     source_path: &str,
     target_path: &str,
     target_prefix: &str,
+    target_extension: &str,
 ) -> Result<usize, String> {
     let content = read_file(source_path)?;
-    let result = convert_paths(&content, target_prefix)?;
+    let result = convert_paths(&content, target_prefix, target_extension)?;
     
     fs::write(target_path, &result.content).map_err(|e| format!("保存失败: {}", e))?;
     
